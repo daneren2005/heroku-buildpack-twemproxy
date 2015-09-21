@@ -2,7 +2,7 @@ CACHE_DIR=$1
 
 set -e
 
-if [ ! -f "/var/cache/twemproxy-$TWEMPROXY_VERSION.tar.gz" ]; then
+if [ ! -f /var/cache/twemproxy-$TWEMPROXY_VERSION.tar.gz ]; then
   wget -q -O /var/cache/twemproxy-$TWEMPROXY_VERSION.tar.gz https://github.com/twitter/twemproxy/archive/v$TWEMPROXY_VERSION.tar.gz
 fi
 
@@ -15,7 +15,7 @@ make install
 
 cd /
 
-if [ ! -f "/var/cache/stunnel-$STUNNEL_VERSION.tar.gz" ]; then
+if [ ! -f /var/cache/stunnel-$STUNNEL_VERSION.tar.gz ]; then
   wget -q --no-check-certificate -O /var/cache/stunnel-$STUNNEL_VERSION.tar.gz https://www.stunnel.org/downloads/stunnel-$STUNNEL_VERSION.tar.gz
   # cert is for mirt.net, which does not match stunnel.org
 fi
