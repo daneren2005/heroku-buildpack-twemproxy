@@ -1,0 +1,77 @@
+#!/usr/bin/env bash
+# bin/compile <build-dir> <cache-dir> <env-dir>
+
+# fail fast
+set -e
+
+# debug
+# set -x
+
+# clean up leaking environment
+unset GIT_DIR
+
+# config
+TWEMPROXY_VERSION="0.4.1"
+if [ "$STACK" == "cedar-14" ]; then
+  STUNNEL_VERSION="5.08"
+else
+  STUNNEL_VERSION="5.02"
+fi
+
+# parse and derive params
+BUILD_DIR=$1
+CACHE_DIR=$2
+LP_DIR=`cd $(dirname $0); cd ..; pwd`
+BUILDPACK_DIR="$(dirname $(dirname $0))"
+
+function error() {
+  echo " !     $*" >&2
+  exit 1
+}
+
+function indent() {
+  c='s/^/       /'
+  case $(uname) in
+    Darwin) sed -l "$c";;
+    *)      sed -u "$c";;
+  esac
+}
+
+
+echo "Using twemproxy version: ${TWEMPROXY_VERSION}" | indent
+echo "Using stunnel version: ${STUNNEL_VERSION}" | indent
+echo "Using stack version: ${STACK}" | indent
+
+# vendor directories
+VENDORED_TWEMPROXY_VERSION="vendor/twemproxy"
+VENDORED_STUNNEL="vendor/stunnel"
+
+# vendor twemproxy into the slug
+echo "-----> Vendoring twemproxy into slug"
+PATH="$BUILD_DIR/$VENDORED_TWEMPROXY/bin:$PATH"
+mkdir -p "$BUILD_DIR/$VENDORED_TWEMPROXY"
+if [ ! -f "/var/cache/twemproxy-$TWEMPROXY_VERSION.tar.gz" ]; then
+  echo "Compiling twemproxy: ${TWEMPROXY_VERSION}" | indent
+  $BUILDPACK_DIR/bin/twemproxy-build $CACHE_DIR
+fi
+cp -R $CACHE_DIR/twemproxy $BUILD_DIR/$VENDORED_STUNNEL
+
+# vendor stunnel into the slug
+if [ ! -f $BUILD_DIR/$VENDORED_STUNNEL ]; then
+  echo "-----> Vendoring stunnel into slug"
+  PATH="$BUILD_DIR/$VENDORED_STUNNEL/bin:$PATH"
+  mkdir -p "$BUILD_DIR/$VENDORED_STUNNEL"
+  cp -R $CACHE_DIR/stunnel $BUILD_DIR/$VENDORED_STUNNEL
+fi
+
+echo "-----> Moving the configuration generation script into app/bin"
+mkdir -p $BUILD_DIR/bin
+cp "$BUILDPACK_DIR/bin/gen-twemproxy-conf.sh" $BUILD_DIR/bin
+chmod +x $BUILD_DIR/bin/gen-twemproxy-conf.sh
+
+echo "-----> Moving the start-twemproxy-stunnel script into app/bin"
+mkdir -p $BUILD_DIR/bin
+cp "$BUILDPACK_DIR/bin/start-twemproxy-stunnel" $BUILD_DIR/bin/
+chmod +x $BUILD_DIR/bin/start-twemproxy-stunnel
+
+echo "-----> twemproxy/stunnel done"
