@@ -1,6 +1,7 @@
 CACHE_DIR=$1
 
 set -e
+mkdir -p /tmp/cache
 
 if [ ! -f /var/cache/twemproxy-$TWEMPROXY_VERSION.tar.gz ]; then
   wget -q -O /var/cache/twemproxy-$TWEMPROXY_VERSION.tar.gz https://github.com/twitter/twemproxy/archive/v$TWEMPROXY_VERSION.tar.gz
