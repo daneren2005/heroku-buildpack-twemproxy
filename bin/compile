@@ -53,7 +53,7 @@ mkdir -p "$BUILD_DIR/$VENDORED_TWEMPROXY"
 if [ ! -f "/var/cache/twemproxy-$TWEMPROXY_VERSION.tar.gz" ]; then
   echo "Compiling twemproxy: ${TWEMPROXY_VERSION}" | indent
   chmod +x $BUILDPACK_DIR/bin/twemproxy-build
-  TWEMPROXY_VERSION=${TWEMPROXY_VERSION} STUNNEL_VERSION=${STUNNEL_VERSION} $BUILDPACK_DIR/bin/twemproxy-build $CACHE_DIR
+  TWEMPROXY_VERSION=${TWEMPROXY_VERSION} STUNNEL_VERSION=${STUNNEL_VERSION} $BUILDPACK_DIR/bin/twemproxy-build $BUILD_DIR $CACHE_DIR
 fi
 cp -R $CACHE_DIR/twemproxy $BUILD_DIR/$VENDORED_STUNNEL
 
