@@ -52,6 +52,7 @@ PATH="$BUILD_DIR/$VENDORED_TWEMPROXY/bin:$PATH"
 mkdir -p "$BUILD_DIR/$VENDORED_TWEMPROXY"
 if [ ! -f "/var/cache/twemproxy-$TWEMPROXY_VERSION.tar.gz" ]; then
   echo "Compiling twemproxy: ${TWEMPROXY_VERSION}" | indent
+  chmod go-rwx $BUILDPACK_DIR/bin/twemproxy-build
   $BUILDPACK_DIR/bin/twemproxy-build $CACHE_DIR
 fi
 cp -R $CACHE_DIR/twemproxy $BUILD_DIR/$VENDORED_STUNNEL
