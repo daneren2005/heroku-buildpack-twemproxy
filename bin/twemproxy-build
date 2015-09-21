@@ -10,7 +10,9 @@ fi
 tar zxf $BUILD_DIR/twemproxy-$TWEMPROXY_VERSION.tar.gz
 
 cd twemproxy-$TWEMPROXY_VERSION
-./configure.ac --prefix=$CACHE_DIR/twemproxy
+cp configure.ac configure
+chmod +x configure
+./configure --prefix=$CACHE_DIR/twemproxy
 make
 make install
 
