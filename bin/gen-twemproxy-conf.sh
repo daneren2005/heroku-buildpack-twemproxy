@@ -30,7 +30,7 @@ do
   export ${REDIS_URL}_TWEMPROXY=${REDIS_URL_VALUE}
 
   cat >> /app/vendor/twemproxy/twemproxy.yml << EOFEOF
-redis:
+${REDIS_URL}:
 	listen: 127.0.0.1:620${n}
 	redis: true
 	servers:
@@ -38,7 +38,7 @@ redis:
 EOFEOF
 
   cat >> /app/vendor/stunnel/stunnel-twemproxy.conf << EOFEOF
-[$POSTGRES_URL]
+[${REDIS_URL}]
 client = yes
 accept  = /tmp/.s.REDIS.620${n}
 connect = ${REDIS_URL_VALUE}
