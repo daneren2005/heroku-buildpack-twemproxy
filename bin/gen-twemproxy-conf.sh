@@ -45,7 +45,7 @@ ${REDIS_URL}:
   redis: true
   redis_auth: ${DB_PASS}
   servers:
-   - ${DB_HOST}:${DB_PORT}
+   - ${DB_HOST}:${DB_PORT}:1
 EOFEOF
 
   cat >> /app/vendor/stunnel/stunnel-twemproxy.conf << EOFEOF
