@@ -27,7 +27,15 @@ for REDIS_URL in $REDIS_URLS
 do
   echo "Setting ${REDIS_URL}_TWEMPROXY config var"
   eval REDIS_URL_VALUE=\$$REDIS_URL
-  export ${REDIS_URL}_TWEMPROXY=${REDIS_URL_VALUE}
+
+  DB=$(echo ${REDIS_URL_VALUE} | perl -lne 'print "$1 $2 $3 $4 $5 $6" if /^redis(?:ql)?:\/\/([^:]+):([^@]+)@(.*?):(.*?)(\\?.*)?$/')
+  DB_URI=( $DB )
+  DB_USER=${DB_URI[0]}
+  DB_PASS=${DB_URI[1]}
+  DB_HOST=${DB_URI[2]}
+  DB_PORT=${DB_URI[3]}
+
+  export ${REDIS_URL}_TWEMPROXY=redis://$DB_USER:$DB_PASS@127.0.0.1:620${n}
 
   cat >> /app/vendor/twemproxy/twemproxy.yml << EOFEOF
 ${REDIS_URL}:
@@ -41,7 +49,7 @@ EOFEOF
 [${REDIS_URL}]
 client = yes
 accept  = /tmp/.s.REDIS.620${n}
-connect = ${REDIS_URL_VALUE}
+connect = ${DB_HOST}:${DB_PORT}
 EOFEOF
 
   let "n += 1"
