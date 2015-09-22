@@ -43,22 +43,21 @@ echo "Using stunnel version: ${STUNNEL_VERSION}" | indent
 echo "Using stack version: ${STACK}" | indent
 
 # vendor directories
-VENDORED_TWEMPROXY_VERSION="vendor/twemproxy"
+VENDORED_TWEMPROXY="vendor/twemproxy"
 VENDORED_STUNNEL="vendor/stunnel"
 
 # vendor twemproxy into the slug
 echo "-----> Vendoring twemproxy into slug"
 PATH="$BUILD_DIR/$VENDORED_TWEMPROXY/bin:$PATH"
 mkdir -p "$BUILD_DIR/$VENDORED_TWEMPROXY"
-if [ ! -f "/var/cache/twemproxy-$TWEMPROXY_VERSION.tar.gz" ]; then
+if [ ! -e $CACHE_DIR/twemproxy ]; then
   echo "Compiling twemproxy: ${TWEMPROXY_VERSION}" | indent
-  chmod +x $BUILDPACK_DIR/bin/twemproxy-build
   TWEMPROXY_VERSION=${TWEMPROXY_VERSION} STUNNEL_VERSION=${STUNNEL_VERSION} $BUILDPACK_DIR/bin/twemproxy-build $BUILD_DIR $CACHE_DIR
 fi
-cp -R $CACHE_DIR/twemproxy $BUILD_DIR/$VENDORED_STUNNEL
+cp -R $CACHE_DIR/twemproxy $BUILD_DIR/$VENDORED_TWEMPROXY
 
 # vendor stunnel into the slug
-if [ ! -f $BUILD_DIR/$VENDORED_STUNNEL ]; then
+if [ ! -e $BUILD_DIR/$VENDORED_STUNNEL ]; then
   echo "-----> Vendoring stunnel into slug"
   PATH="$BUILD_DIR/$VENDORED_STUNNEL/bin:$PATH"
   mkdir -p "$BUILD_DIR/$VENDORED_STUNNEL"
