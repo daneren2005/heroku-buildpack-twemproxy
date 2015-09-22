@@ -35,14 +35,14 @@ do
   DB_HOST=${DB_URI[2]}
   DB_PORT=${DB_URI[3]}
 
-  NEW_URL=redis://127.0.0.1:620${n}
+  NEW_URL=redis://${DB_USER}:${DB_PASS}@127.0.0.1:620${n}
   export ${REDIS_URL}_TWEMPROXY=${NEW_URL}
-  echo "New config: ${NEW_URL}"
 
   cat >> /app/vendor/twemproxy/twemproxy.yml << EOFEOF
 ${REDIS_URL}:
   listen: 127.0.0.1:620${n}
   redis: true
+  redis_auth: ${DB_PASS}
   servers:
    - /tmp/.s.REDIS.620${n}:1
 EOFEOF
