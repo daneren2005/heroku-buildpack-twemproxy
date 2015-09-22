@@ -52,13 +52,19 @@ PATH="$BUILD_DIR/$VENDORED_TWEMPROXY/bin:$PATH"
 mkdir -p "$BUILD_DIR/$VENDORED_TWEMPROXY"
 if [ ! -e $CACHE_DIR/twemproxy ]; then
   echo "Compiling twemproxy: ${TWEMPROXY_VERSION}" | indent
-  TWEMPROXY_VERSION=${TWEMPROXY_VERSION} STUNNEL_VERSION=${STUNNEL_VERSION} $BUILDPACK_DIR/bin/twemproxy-build $BUILD_DIR $CACHE_DIR
+  TWEMPROXY_VERSION=${TWEMPROXY_VERSION} $BUILDPACK_DIR/bin/twemproxy-build $BUILD_DIR $CACHE_DIR
 fi
 cp -R $CACHE_DIR/twemproxy $BUILD_DIR/$VENDORED_TWEMPROXY
 
 # vendor stunnel into the slug
 if [ ! -e $BUILD_DIR/$VENDORED_STUNNEL ]; then
   echo "-----> Vendoring stunnel into slug"
+
+  if [ ! -e $CACHE_DIR/stunnel ]; then
+    echo "Compiling stunnel: ${STUNNEL_VERSION}" | indent
+    STUNNEL_VERSION=${STUNNEL_VERSION} $BUILDPACK_DIR/bin/stunnel-build $BUILD_DIR $CACHE_DIR
+  fi
+
   PATH="$BUILD_DIR/$VENDORED_STUNNEL/bin:$PATH"
   mkdir -p "$BUILD_DIR/$VENDORED_STUNNEL"
   cp -R $CACHE_DIR/stunnel $BUILD_DIR/$VENDORED_STUNNEL
