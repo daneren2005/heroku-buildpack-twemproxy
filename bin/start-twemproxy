@@ -22,7 +22,6 @@ run-twemproxy() {
   mkfifo "$psmgr"
 
   # Start processes.
-  aux-start stunnel SIGINT vendor/stunnel/bin/stunnel vendor/stunnel/stunnel-twemproxy.conf
   aux-start twemproxy SIGINT vendor/twemproxy/sbin/nutcracker -c vendor/twemproxy/twemproxy.yml
   app-start SIGTERM "$@"
   pid=$!

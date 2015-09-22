@@ -12,11 +12,6 @@ unset GIT_DIR
 
 # config
 TWEMPROXY_VERSION="0.4.1"
-if [ "$STACK" == "cedar-14" ]; then
-  STUNNEL_VERSION="5.08"
-else
-  STUNNEL_VERSION="5.02"
-fi
 
 # parse and derive params
 BUILD_DIR=$1
@@ -39,12 +34,10 @@ function indent() {
 
 
 echo "Using twemproxy version: ${TWEMPROXY_VERSION}" | indent
-echo "Using stunnel version: ${STUNNEL_VERSION}" | indent
 echo "Using stack version: ${STACK}" | indent
 
 # vendor directories
 VENDORED_TWEMPROXY="vendor/twemproxy"
-VENDORED_STUNNEL="vendor/stunnel"
 
 # vendor twemproxy into the slug
 echo "-----> Vendoring twemproxy into slug"
@@ -56,28 +49,14 @@ if [ ! -e $CACHE_DIR/twemproxy ]; then
 fi
 cp -R $CACHE_DIR/twemproxy/* $BUILD_DIR/$VENDORED_TWEMPROXY
 
-# vendor stunnel into the slug
-if [ ! -e $BUILD_DIR/$VENDORED_STUNNEL ]; then
-  echo "-----> Vendoring stunnel into slug"
-
-  if [ ! -e $CACHE_DIR/stunnel ]; then
-    echo "Compiling stunnel: ${STUNNEL_VERSION}" | indent
-    STUNNEL_VERSION=${STUNNEL_VERSION} $BUILDPACK_DIR/bin/stunnel-build $BUILD_DIR $CACHE_DIR
-  fi
-
-  PATH="$BUILD_DIR/$VENDORED_STUNNEL/bin:$PATH"
-  mkdir -p "$BUILD_DIR/$VENDORED_STUNNEL"
-  cp -R $CACHE_DIR/stunnel/* $BUILD_DIR/$VENDORED_STUNNEL
-fi
-
 echo "-----> Moving the configuration generation script into app/bin"
 mkdir -p $BUILD_DIR/bin
 cp "$BUILDPACK_DIR/bin/gen-twemproxy-conf.sh" $BUILD_DIR/bin
 chmod +x $BUILD_DIR/bin/gen-twemproxy-conf.sh
 
-echo "-----> Moving the start-twemproxy-stunnel script into app/bin"
+echo "-----> Moving the start-twemproxy script into app/bin"
 mkdir -p $BUILD_DIR/bin
-cp "$BUILDPACK_DIR/bin/start-twemproxy-stunnel" $BUILD_DIR/bin/
-chmod +x $BUILD_DIR/bin/start-twemproxy-stunnel
+cp "$BUILDPACK_DIR/bin/start-twemproxy" $BUILD_DIR/bin/
+chmod +x $BUILD_DIR/bin/start-twemproxy
 
-echo "-----> twemproxy/stunnel done"
+echo "-----> twemproxy done"
