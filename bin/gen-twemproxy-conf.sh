@@ -39,10 +39,10 @@ do
 
   cat >> /app/vendor/twemproxy/twemproxy.yml << EOFEOF
 ${REDIS_URL}:
-	listen: 127.0.0.1:620${n}
-	redis: true
-	servers:
-		- /tmp/.s.REDIS.620${n}
+  listen: 127.0.0.1:620${n}
+  redis: true
+  servers:
+   - /tmp/.s.REDIS.620${n}:1
 EOFEOF
 
   cat >> /app/vendor/stunnel/stunnel-twemproxy.conf << EOFEOF
