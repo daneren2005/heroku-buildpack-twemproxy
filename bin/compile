@@ -54,7 +54,7 @@ if [ ! -e $CACHE_DIR/twemproxy ]; then
   echo "Compiling twemproxy: ${TWEMPROXY_VERSION}" | indent
   TWEMPROXY_VERSION=${TWEMPROXY_VERSION} $BUILDPACK_DIR/bin/twemproxy-build $BUILD_DIR $CACHE_DIR
 fi
-cp -R $CACHE_DIR/twemproxy $BUILD_DIR/$VENDORED_TWEMPROXY
+cp -R $CACHE_DIR/twemproxy/* $BUILD_DIR/$VENDORED_TWEMPROXY
 
 # vendor stunnel into the slug
 if [ ! -e $BUILD_DIR/$VENDORED_STUNNEL ]; then
@@ -67,7 +67,7 @@ if [ ! -e $BUILD_DIR/$VENDORED_STUNNEL ]; then
 
   PATH="$BUILD_DIR/$VENDORED_STUNNEL/bin:$PATH"
   mkdir -p "$BUILD_DIR/$VENDORED_STUNNEL"
-  cp -R $CACHE_DIR/stunnel $BUILD_DIR/$VENDORED_STUNNEL
+  cp -R $CACHE_DIR/stunnel/* $BUILD_DIR/$VENDORED_STUNNEL
 fi
 
 echo "-----> Moving the configuration generation script into app/bin"
