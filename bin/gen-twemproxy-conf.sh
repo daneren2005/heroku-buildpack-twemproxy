@@ -8,7 +8,6 @@ do
   echo "Setting ${REDIS_URL}_TWEMPROXY config var"
   eval REDIS_URL_VALUE=\$$REDIS_URL
 
-  # redis://rediscloud:UV0d4ikbK7UIegq5@pub-redis-19886.us-east-1-1.2.ec2.garantiadata.com:19886
   DB=$(echo ${REDIS_URL_VALUE} | perl -lne 'print "$1 $2 $3 $4 $5 $6" if /^redis(?:ql)?:\/\/([^:]+):([^@]+)@(.*?):(.*?)(\\?.*)?$/')
   DB_URI=( $DB )
   DB_USER=${DB_URI[0]}
