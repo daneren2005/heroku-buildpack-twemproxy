@@ -84,19 +84,11 @@ aux-start() {
   (
     at "$name-start"
 
-    # Ignore SIGTERM; this is inherited by the child process.
+    # Ignore SIGTERM; this is NOT inherited by child processes since Heroku broadcasts to all processes
     trap '' SIGTERM
 
-    # Start child in the background.
-    "$@" &
-
-    # Translate SIGHUP to the appropriate signal to stop the child (anything
-    # except SIGTERM which is ignored). This *will* cancel the wait and may
-    # lead to the outer subshell exiting before the aux process
-    trap "kill -$signal $!" SIGHUP
-
-    # Wait for child to finish, either by crash or by $signal
-    wait
+    # Start process inline so we can trap SIGTERM properly
+    exec "$@"
 
     # Notify FIFO if this finishes first
     echo "$name" > "$psmgr"
